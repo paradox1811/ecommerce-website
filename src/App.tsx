@@ -11,6 +11,8 @@ import { Product, ProductColor, CartItem } from './types';
 import { 
   PRODUCTS,
   HERO_PINK_CLOSET,
+  HERO_LUXURY_CAMPAIGN,
+  HERO_FASHION_EDITORIAL,
   BLACK_MEMBER_BANNER,
   NEW_ARRIVALS_BANNER,
   CLEARANCE_SALE_BANNER,
@@ -43,6 +45,34 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [activeGender, setActiveGender] = useState<'all' | 'unisex' | 'women' | 'men'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [heroSlide, setHeroSlide] = useState<number>(0);
+
+  const heroSlides = [
+    {
+      id: 'slide-1',
+      image: HERO_LUXURY_CAMPAIGN,
+      tagSubtitle: 'WARM UP YOUR WARDROBE',
+      tagDiscount: 'UP TO 50% OFF',
+      tagCta: 'SHOP NOW',
+      title: 'Tuscan Autumn/Winter 2026 Unisex Campaign',
+    },
+    {
+      id: 'slide-2',
+      image: HERO_FASHION_EDITORIAL,
+      tagSubtitle: 'UNISEX ARCHITECTURE',
+      tagDiscount: 'NEW DROPS FROM ₹ 890',
+      tagCta: 'EXPLORE CAPSULE',
+      title: 'Tailored Minimalist Suiting for Men & Women',
+    },
+    {
+      id: 'slide-3',
+      image: HERO_PINK_CLOSET,
+      tagSubtitle: 'SIGNATURE ARCHIVE',
+      tagDiscount: 'UP TO 60% OFF',
+      tagCta: 'SHOP ARCHIVE',
+      title: 'Iconic Nilescart Closet Showcase',
+    },
+  ];
 
   // Cart & Wishlist States
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -288,26 +318,52 @@ export default function App() {
       />
 
       <main className="flex-1">
-        {/* 2. Hero Campaign Showcase (Pink 3D Display Box) matching Screenshot 1 & 5 */}
+        {/* 2. Hero Campaign Showcase (Dynamic Luxury Images + Savana Layout) */}
         <section className="relative w-full overflow-hidden bg-white">
           <div className="relative w-full max-w-[1440px] mx-auto">
-            {/* The Main Hero Compartment Image */}
-            <div className="relative w-full overflow-hidden cursor-pointer" onClick={scrollToForYou}>
+            {/* The Main Hero Compartment Image with Multi-Slide Transition */}
+            <div className="relative w-full aspect-[16/9] md:aspect-[21/9] lg:aspect-[2.35/1] overflow-hidden cursor-pointer bg-neutral-900 group" onClick={scrollToForYou}>
               <img
-                src={HERO_PINK_CLOSET}
-                alt="NILESCART Warm Up Your Wardrobe Campaign"
+                src={heroSlides[heroSlide].image}
+                alt={heroSlides[heroSlide].title}
                 referrerPolicy="no-referrer"
-                className="w-full h-auto object-cover block select-none"
+                className="w-full h-full object-cover object-center transition-all duration-700 ease-out select-none"
               />
+
+              {/* Subtle Gradient Scrim for Contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+
+              {/* Central Hanging Luxury Tag matching Savana Layout */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/95 backdrop-blur-md px-6 sm:px-10 py-5 sm:py-7 rounded-2xl border-2 border-[#d4af37]/70 shadow-2xl flex flex-col items-center text-center max-w-[280px] sm:max-w-sm pointer-events-auto transition-transform hover:scale-102">
+                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-black tracking-[0.2em] uppercase text-neutral-800">
+                    <Sparkles className="w-3.5 h-3.5 text-[#b38b4c] fill-[#b38b4c]" />
+                    <span>{heroSlides[heroSlide].tagSubtitle}</span>
+                    <Sparkles className="w-3.5 h-3.5 text-[#b38b4c] fill-[#b38b4c]" />
+                  </div>
+                  <div className="text-2xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight mt-1 mb-3">
+                    {heroSlides[heroSlide].tagDiscount}
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      scrollToForYou();
+                    }}
+                    className="px-6 sm:px-8 py-2 bg-gradient-to-r from-[#fef5db] via-[#faebca] to-[#f5dfb3] text-neutral-900 text-xs sm:text-sm font-extrabold rounded-full border border-[#d4af37] shadow-md hover:brightness-105 transition-all tracking-wider uppercase"
+                  >
+                    {heroSlides[heroSlide].tagCta}
+                  </button>
+                </div>
+              </div>
 
               {/* Interactive Left & Right Navigation Arrows */}
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  showToast('info', 'Browsing Campaign Slide 1 of 3');
+                  setHeroSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1));
                 }}
-                className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 bg-white/70 hover:bg-white text-neutral-800 rounded-sm flex items-center justify-center transition-all shadow-md"
+                className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 bg-white/85 hover:bg-white text-neutral-900 rounded-full flex items-center justify-center transition-all shadow-md z-10"
                 aria-label="Previous campaign slide"
               >
                 <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
@@ -316,23 +372,30 @@ export default function App() {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  showToast('info', 'Browsing Campaign Slide 2 of 3');
+                  setHeroSlide((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1));
                 }}
-                className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 bg-white/70 hover:bg-white text-neutral-800 rounded-sm flex items-center justify-center transition-all shadow-md"
+                className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 bg-white/85 hover:bg-white text-neutral-900 rounded-full flex items-center justify-center transition-all shadow-md z-10"
                 aria-label="Next campaign slide"
               >
                 <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
               </button>
 
-              {/* Clickable Overlay for Central SHOP NOW */}
-              <div 
-                className="absolute left-1/2 -translate-x-1/2 bottom-[11%] md:bottom-[13%] w-40 md:w-56 h-9 md:h-12 rounded-full cursor-pointer opacity-0 hover:opacity-20 bg-white transition-opacity"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  scrollToForYou();
-                }}
-                title="Shop Now Up To 50% Off"
-              />
+              {/* Bottom Carousel Indicator Dots */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+                {heroSlides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setHeroSlide(idx);
+                    }}
+                    className={`h-2 rounded-full transition-all ${
+                      heroSlide === idx ? 'w-6 bg-white shadow-xs' : 'w-2 bg-white/50 hover:bg-white/80'
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Black Day Sale Member Banner Strip matching Screenshot 5 */}

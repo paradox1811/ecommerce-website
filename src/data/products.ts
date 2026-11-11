@@ -23,6 +23,7 @@ export const FORYOU_4_BUTTERFLY_KNIT = '/assets/cropped/foryou_4_butterfly_knit.
 
 // New Luxury Unisex & Menswear Images
 export const HERO_LUXURY_CAMPAIGN = '/src/assets/images/hero_luxury_unisex_campaign_1794412822515.jpg';
+export const HERO_FASHION_EDITORIAL = '/src/assets/images/hero_fashion_editorial_1794411612844.jpg';
 export const CASHMERE_COAT = '/src/assets/images/product_luxury_cashmere_coat_1794412822491.jpg';
 export const MENS_KNITWEAR = '/src/assets/images/product_luxury_mens_knitwear_1794412823242.jpg';
 export const LEATHER_DUFFLE = '/src/assets/images/product_luxury_leather_duffle_1794412824104.jpg';
@@ -360,9 +361,75 @@ export const PRODUCTS: Product[] = [
     image: BLAZER_IMAGE,
     hoverImage: TAILORED_SUIT,
     gallery: [BLAZER_IMAGE, TAILORED_SUIT],
-    tags: ['blazer', 'linen', 'tailored', 'unisex'],
+    tags: ['blazer', 'linen', 'tailored', 'unisex', 'outerwear'],
     inStock: true,
     stockCount: 8,
+  },
+  {
+    id: 'prod-11',
+    name: 'Artisan Crochet Knit Polo Top in Ecru & Terracotta',
+    category: 'tops',
+    gender: 'unisex',
+    price: 1890,
+    originalPrice: 2890,
+    discountPercent: 34,
+    rating: 4.9,
+    reviewCount: 167,
+    isNew: true,
+    isTrending: true,
+    isBestSeller: false,
+    colors: [
+      { name: 'Ecru Terracotta', hex: '#d48d6b' },
+      { name: 'Warm Alabaster', hex: '#f0ece1' },
+      { name: 'Deep Sage', hex: '#4a5d4e' },
+    ],
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    description: 'Intricately hand-crocheted open-stitch luxury polo top. Woven with organic combed cotton yarns for breezy texture, open Johnny collar, and natural horn button accent.',
+    details: {
+      material: '100% Certified Organic Combed Cotton',
+      care: 'Hand wash cold with wool wash, dry flat',
+      fit: 'Relaxed boxy resort fit.',
+      origin: 'Handcrafted in Lisbon',
+    },
+    image: CROCHET_IMAGE,
+    hoverImage: CROCHET_IMAGE,
+    gallery: [CROCHET_IMAGE, HERO_LUXURY_CAMPAIGN],
+    tags: ['tops', 'crochet', 'polo', 'knitwear', 'unisex', 'resort'],
+    inStock: true,
+    stockCount: 7,
+  },
+  {
+    id: 'prod-12',
+    name: 'Wide-Leg Double-Pleated Tailored Trousers',
+    category: 'bottoms',
+    gender: 'unisex',
+    price: 2490,
+    originalPrice: 3690,
+    discountPercent: 32,
+    rating: 4.8,
+    reviewCount: 204,
+    isNew: false,
+    isTrending: true,
+    isBestSeller: true,
+    colors: [
+      { name: 'Sand Taupe', hex: '#a69888' },
+      { name: 'Midnight Charcoal', hex: '#232528' },
+      { name: 'Dark Olive', hex: '#3f4236' },
+    ],
+    sizes: ['28', '30', '32', '34', '36'],
+    description: 'Bespoke-inspired high-waisted pleated trousers cut with a generous volume through the leg. Features deep forward double pleats, side waist adjusters, and a heavy drape that breaks over loafers.',
+    details: {
+      material: '65% Virgin Wool, 35% Lyocell for Fluid Movement',
+      care: 'Dry clean only',
+      fit: 'High rise, wide relaxed straight leg.',
+      origin: 'Made in Italy',
+    },
+    image: TROUSERS_IMAGE,
+    hoverImage: TAILORED_SUIT,
+    gallery: [TROUSERS_IMAGE, TAILORED_SUIT],
+    tags: ['bottoms', 'trousers', 'pleated', 'tailored', 'unisex', 'pants'],
+    inStock: true,
+    stockCount: 6,
   },
 ];
 
