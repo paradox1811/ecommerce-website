@@ -1,0 +1,6 @@
+{
+  "name": "NILESCART | Modern Contemporary Fashion",
+  "description": "Premium contemporary fashion, curated drops, and everyday elevated essentials with seamless shopping and express worldwide delivery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
