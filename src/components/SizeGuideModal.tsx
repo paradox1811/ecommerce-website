@@ -26,9 +26,9 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl p-6 overflow-hidden border border-neutral-200"
+        className="relative w-full max-w-lg bg-white rounded-2xl sm:rounded-xl shadow-2xl p-4 sm:p-6 overflow-hidden border border-neutral-200 max-h-[92dvh] overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="size-guide-title"

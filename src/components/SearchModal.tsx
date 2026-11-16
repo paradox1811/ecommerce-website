@@ -36,13 +36,16 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   if (!isOpen) return null;
 
   const popularSearches = [
-    'Linen Blazer',
-    'Silk Dress',
-    'Pleated Trousers',
-    'Crochet Top',
-    'Raw Denim',
+    'Chelsea Boots',
+    'Eau de Parfum',
     'Trench Coat',
-    'Co-Ords',
+    'Selvedge Jeans',
+    'Silk Lounge',
+    'Structured Bag',
+    '18k Gold',
+    'Court Sneakers',
+    'Satin Jumpsuit',
+    'Activewear',
   ];
 
   const filteredProducts = searchQuery.trim()
@@ -55,11 +58,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     : [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-6 sm:pt-20 px-2.5 sm:px-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="absolute inset-0" onClick={onClose} />
 
       <div
-        className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden border border-neutral-200 z-10"
+        className="relative w-full max-w-2xl bg-white rounded-2xl sm:rounded-xl shadow-2xl overflow-hidden border border-neutral-200 z-10 max-h-[88dvh] flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-label="Search NILESCART catalog"

@@ -62,9 +62,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl my-auto overflow-hidden border border-neutral-200"
+        className="relative w-full max-w-4xl bg-white rounded-t-2xl sm:rounded-xl shadow-2xl my-0 sm:my-auto overflow-hidden border border-neutral-200 max-h-[94dvh] sm:max-h-[88vh] flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-labelledby="product-modal-title"
@@ -78,7 +78,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <X className="w-5 h-5" />
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 max-h-[85vh] overflow-y-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 overflow-y-auto flex-1">
           {/* Left: Gallery Column */}
           <div className="p-6 bg-[#fbfaf8] flex flex-col gap-4 border-b md:border-b-0 md:border-r border-neutral-200">
             <div className="relative aspect-[3/4] w-full bg-neutral-100 rounded-lg overflow-hidden border border-neutral-200/80">
@@ -327,7 +327,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </button>
                   {openAccordion === 'shipping' && (
                     <div className="pb-3 text-neutral-600 leading-relaxed">
-                      <p>Orders are dispatched within 24 hours. Free express worldwide delivery on orders over $49. 30-day effortless returns with prepaid courier pickup.</p>
+                      <p>Orders are dispatched within 24 hours. Free express delivery on orders over {currencySymbol}999. 30-day effortless returns with prepaid courier pickup.</p>
                     </div>
                   )}
                 </div>

@@ -1,86 +1,92 @@
 import React from 'react';
-import { Home, Compass, Heart, ShoppingBag, User } from 'lucide-react';
+import { Home, Search, Layers, Heart, ShoppingBag } from 'lucide-react';
 
 interface MobileBottomNavProps {
-  activeCategory: string;
-  onSelectCategory: (cat: string) => void;
   cartCount: number;
   wishlistCount: number;
-  onOpenCart: () => void;
+  onOpenSearch: () => void;
+  onOpenCategories: () => void;
   onOpenWishlist: () => void;
-  onOpenAccount: () => void;
-  onScrollToCatalog: () => void;
+  onOpenCart: () => void;
+  onGoHome: () => void;
 }
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
-  activeCategory,
-  onSelectCategory,
   cartCount,
   wishlistCount,
-  onOpenCart,
+  onOpenSearch,
+  onOpenCategories,
   onOpenWishlist,
-  onOpenAccount,
-  onScrollToCatalog,
+  onOpenCart,
+  onGoHome,
 }) => {
   return (
-    <nav 
-      aria-label="Mobile Navigation" 
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-neutral-200/90 h-14 px-2 flex items-center justify-around shadow-lg"
-    >
-      <button
-        onClick={() => {
-          onSelectCategory('all');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        className={`flex flex-col items-center justify-center w-14 h-full text-[10px] font-medium transition-colors ${
-          activeCategory === 'all' ? 'text-neutral-950 font-bold' : 'text-neutral-500'
-        }`}
-      >
-        <Home className="w-4 h-4 mb-0.5" />
-        <span>Home</span>
-      </button>
+    <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur-md border-t border-neutral-200 shadow-lg pb-safe">
+      <div className="grid grid-cols-5 h-14 items-center">
+        {/* 1. Home */}
+        <button
+          onClick={onGoHome}
+          className="flex flex-col items-center justify-center gap-0.5 text-neutral-800 active:text-black py-1"
+          aria-label="Home"
+        >
+          <Home className="w-5 h-5 stroke-[1.8]" />
+          <span className="text-[10px] font-bold tracking-tight">Home</span>
+        </button>
 
-      <button
-        onClick={onScrollToCatalog}
-        className="flex flex-col items-center justify-center w-14 h-full text-[10px] font-medium text-neutral-500 hover:text-neutral-950 transition-colors"
-      >
-        <Compass className="w-4 h-4 mb-0.5" />
-        <span>Catalog</span>
-      </button>
+        {/* 2. Search */}
+        <button
+          onClick={onOpenSearch}
+          className="flex flex-col items-center justify-center gap-0.5 text-neutral-600 active:text-black py-1"
+          aria-label="Search"
+        >
+          <Search className="w-5 h-5 stroke-[1.8]" />
+          <span className="text-[10px] font-semibold tracking-tight">Search</span>
+        </button>
 
-      <button
-        onClick={onOpenWishlist}
-        className="relative flex flex-col items-center justify-center w-14 h-full text-[10px] font-medium text-neutral-500 hover:text-neutral-950 transition-colors"
-      >
-        <Heart className="w-4 h-4 mb-0.5" />
-        <span>Wishlist</span>
-        {wishlistCount > 0 && (
-          <span className="absolute top-1.5 right-3 w-3.5 h-3.5 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-            {wishlistCount}
-          </span>
-        )}
-      </button>
+        {/* 3. Categories */}
+        <button
+          onClick={onOpenCategories}
+          className="flex flex-col items-center justify-center gap-0.5 text-neutral-600 active:text-black py-1"
+          aria-label="Categories"
+        >
+          <Layers className="w-5 h-5 stroke-[1.8]" />
+          <span className="text-[10px] font-semibold tracking-tight">Categories</span>
+        </button>
 
-      <button
-        onClick={onOpenCart}
-        className="relative flex flex-col items-center justify-center w-14 h-full text-[10px] font-medium text-neutral-500 hover:text-neutral-950 transition-colors"
-      >
-        <ShoppingBag className="w-4 h-4 mb-0.5" />
-        <span>Bag</span>
-        {cartCount > 0 && (
-          <span className="absolute top-1.5 right-3 w-3.5 h-3.5 bg-neutral-950 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-            {cartCount}
-          </span>
-        )}
-      </button>
+        {/* 4. Wishlist */}
+        <button
+          onClick={onOpenWishlist}
+          className="relative flex flex-col items-center justify-center gap-0.5 text-neutral-600 active:text-black py-1"
+          aria-label="Wishlist"
+        >
+          <div className="relative">
+            <Heart className="w-5 h-5 stroke-[1.8]" />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-2.5 w-4 h-4 bg-black text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {wishlistCount}
+              </span>
+            )}
+          </div>
+          <span className="text-[10px] font-semibold tracking-tight">Wishlist</span>
+        </button>
 
-      <button
-        onClick={onOpenAccount}
-        className="flex flex-col items-center justify-center w-14 h-full text-[10px] font-medium text-neutral-500 hover:text-neutral-950 transition-colors"
-      >
-        <User className="w-4 h-4 mb-0.5" />
-        <span>Account</span>
-      </button>
-    </nav>
+        {/* 5. Bag */}
+        <button
+          onClick={onOpenCart}
+          className="relative flex flex-col items-center justify-center gap-0.5 text-neutral-600 active:text-black py-1"
+          aria-label="Shopping Bag"
+        >
+          <div className="relative">
+            <ShoppingBag className="w-5 h-5 stroke-[1.8]" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-2.5 w-4 h-4 bg-black text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </div>
+          <span className="text-[10px] font-semibold tracking-tight">Bag</span>
+        </button>
+      </div>
+    </div>
   );
 };

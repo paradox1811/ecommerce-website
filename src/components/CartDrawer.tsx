@@ -34,7 +34,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   if (!isOpen) return null;
 
-  const FREE_SHIPPING_THRESHOLD = 49;
+  const FREE_SHIPPING_THRESHOLD = 999;
   const rawSubtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const subtotal = Math.round(rawSubtotal * currencyRate);
 
@@ -47,7 +47,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }
   }
 
-  const shippingCost = rawSubtotal >= FREE_SHIPPING_THRESHOLD || rawSubtotal === 0 ? 0 : Math.round(6 * currencyRate);
+  const shippingCost = rawSubtotal >= FREE_SHIPPING_THRESHOLD || rawSubtotal === 0 ? 0 : Math.round(99 * currencyRate);
   const estimatedTax = Math.round((subtotal - discountAmount) * 0.08);
   const total = Math.max(0, subtotal - discountAmount + shippingCost + estimatedTax);
 
@@ -69,8 +69,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     <div className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
+        <div className="w-screen max-w-full sm:max-w-md bg-white shadow-2xl flex flex-col justify-between">
           {/* Header */}
           <div className="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -198,7 +198,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
           {/* Footer & Checkout Module */}
           {cartItems.length > 0 && (
-            <div className="p-5 border-t border-neutral-200 bg-[#fbfaf8] space-y-3">
+            <div className="p-5 border-t border-neutral-200 bg-[#fbfaf8] space-y-3 pb-safe">
               {/* Promo Code Form */}
               {appliedPromo ? (
                 <div className="flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs">

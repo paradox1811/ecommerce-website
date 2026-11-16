@@ -27,8 +27,8 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
     <div className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
+        <div className="w-screen max-w-full sm:max-w-md bg-white shadow-2xl flex flex-col justify-between">
           {/* Header */}
           <div className="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -110,7 +110,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
 
           {/* Footer */}
           {wishlist.length > 0 && (
-            <div className="p-4 border-t border-neutral-200 bg-[#fbfaf8]">
+            <div className="p-4 border-t border-neutral-200 bg-[#fbfaf8] pb-safe">
               <p className="text-[11px] text-neutral-500 text-center">
                 Items in your wishlist are reserved temporarily based on current warehouse stock.
               </p>

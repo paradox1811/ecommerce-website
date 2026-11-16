@@ -1,0 +1,140 @@
+{
+  "brand": "NILESCART",
+  "note": "5 distinct luxury color themes containing newly generated images for every editorial storefront section (non-product slots only).",
+  "sectionSlots": [
+    "heroBanner",
+    "bestsellersBanner",
+    "newArrivalsBanner",
+    "lastChancesBanner",
+    "offerAccessories",
+    "offerKnitwear",
+    "offerEssentials",
+    "offerJackets",
+    "trendingDarkRomance",
+    "trendingFauxFur",
+    "trendingFormalCoords",
+    "trendingAnimalPrint"
+  ],
+  "themes": [
+    {
+      "id": "obsidian-gold",
+      "name": "Obsidian & Gold",
+      "folder": "01-obsidian-gold",
+      "colors": {
+        "primary": "#141312",
+        "accent": "#e6c891",
+        "surface": "#faf8f4"
+      },
+      "images": {
+        "heroBanner": "/assets/images/section-themes/01-obsidian-gold/hero-banner.jpg",
+        "bestsellersBanner": "/assets/images/section-themes/01-obsidian-gold/bestsellers-banner.jpg",
+        "newArrivalsBanner": "/assets/images/section-themes/01-obsidian-gold/arrivals-banner.jpg",
+        "lastChancesBanner": "/assets/images/section-themes/01-obsidian-gold/clearance-banner.jpg",
+        "offerAccessories": "/assets/images/section-themes/01-obsidian-gold/offer-accessories.jpg",
+        "offerKnitwear": "/assets/images/section-themes/01-obsidian-gold/offer-knitwear.jpg",
+        "offerEssentials": "/assets/images/section-themes/01-obsidian-gold/offer-essentials.jpg",
+        "offerJackets": "/assets/images/section-themes/01-obsidian-gold/offer-jackets.jpg",
+        "trendingDarkRomance": "/assets/images/section-themes/01-obsidian-gold/trending-dark-romance.jpg",
+        "trendingFauxFur": "/assets/images/section-themes/01-obsidian-gold/trending-faux-fur.jpg",
+        "trendingFormalCoords": "/assets/images/section-themes/01-obsidian-gold/trending-formal-coords.jpg",
+        "trendingAnimalPrint": "/assets/images/section-themes/01-obsidian-gold/trending-animal-print.jpg"
+      }
+    },
+    {
+      "id": "terracotta-espresso",
+      "name": "Terracotta & Espresso",
+      "folder": "02-terracotta-espresso",
+      "colors": {
+        "primary": "#6e2d1a",
+        "accent": "#c76846",
+        "surface": "#fcf9f5"
+      },
+      "images": {
+        "heroBanner": "/assets/images/section-themes/02-terracotta-espresso/hero-banner.jpg",
+        "bestsellersBanner": "/assets/images/section-themes/02-terracotta-espresso/bestsellers-banner.jpg",
+        "newArrivalsBanner": "/assets/images/section-themes/02-terracotta-espresso/arrivals-banner.jpg",
+        "lastChancesBanner": "/assets/images/section-themes/02-terracotta-espresso/clearance-banner.jpg",
+        "offerAccessories": "/assets/images/section-themes/02-terracotta-espresso/offer-accessories.jpg",
+        "offerKnitwear": "/assets/images/section-themes/02-terracotta-espresso/offer-knitwear.jpg",
+        "offerEssentials": "/assets/images/section-themes/02-terracotta-espresso/offer-essentials.jpg",
+        "offerJackets": "/assets/images/section-themes/02-terracotta-espresso/offer-jackets.jpg",
+        "trendingDarkRomance": "/assets/images/section-themes/02-terracotta-espresso/trending-dark-romance.jpg",
+        "trendingFauxFur": "/assets/images/section-themes/02-terracotta-espresso/trending-faux-fur.jpg",
+        "trendingFormalCoords": "/assets/images/section-themes/02-terracotta-espresso/trending-formal-coords.jpg",
+        "trendingAnimalPrint": "/assets/images/section-themes/02-terracotta-espresso/trending-animal-print.jpg"
+      }
+    },
+    {
+      "id": "sapphire-mist",
+      "name": "Sapphire & Pearl Mist",
+      "folder": "03-sapphire-mist",
+      "colors": {
+        "primary": "#13294b",
+        "accent": "#4b73ad",
+        "surface": "#f8fafd"
+      },
+      "images": {
+        "heroBanner": "/assets/images/section-themes/03-sapphire-mist/hero-banner.jpg",
+        "bestsellersBanner": "/assets/images/section-themes/03-sapphire-mist/bestsellers-banner.jpg",
+        "newArrivalsBanner": "/assets/images/section-themes/03-sapphire-mist/arrivals-banner.jpg",
+        "lastChancesBanner": "/assets/images/section-themes/03-sapphire-mist/clearance-banner.jpg",
+        "offerAccessories": "/assets/images/section-themes/03-sapphire-mist/offer-accessories.jpg",
+        "offerKnitwear": "/assets/images/section-themes/03-sapphire-mist/offer-knitwear.jpg",
+        "offerEssentials": "/assets/images/section-themes/03-sapphire-mist/offer-essentials.jpg",
+        "offerJackets": "/assets/images/section-themes/03-sapphire-mist/offer-jackets.jpg",
+        "trendingDarkRomance": "/assets/images/section-themes/03-sapphire-mist/trending-dark-romance.jpg",
+        "trendingFauxFur": "/assets/images/section-themes/03-sapphire-mist/trending-faux-fur.jpg",
+        "trendingFormalCoords": "/assets/images/section-themes/03-sapphire-mist/trending-formal-coords.jpg",
+        "trendingAnimalPrint": "/assets/images/section-themes/03-sapphire-mist/trending-animal-print.jpg"
+      }
+    },
+    {
+      "id": "bordeaux-rose",
+      "name": "Bordeaux & Rose Marble",
+      "folder": "04-bordeaux-rose",
+      "colors": {
+        "primary": "#541a2e",
+        "accent": "#a86477",
+        "surface": "#fcf8f9"
+      },
+      "images": {
+        "heroBanner": "/assets/images/section-themes/04-bordeaux-rose/hero-banner.jpg",
+        "bestsellersBanner": "/assets/images/section-themes/04-bordeaux-rose/bestsellers-banner.jpg",
+        "newArrivalsBanner": "/assets/images/section-themes/04-bordeaux-rose/arrivals-banner.jpg",
+        "lastChancesBanner": "/assets/images/section-themes/04-bordeaux-rose/clearance-banner.jpg",
+        "offerAccessories": "/assets/images/section-themes/04-bordeaux-rose/offer-accessories.jpg",
+        "offerKnitwear": "/assets/images/section-themes/04-bordeaux-rose/offer-knitwear.jpg",
+        "offerEssentials": "/assets/images/section-themes/04-bordeaux-rose/offer-essentials.jpg",
+        "offerJackets": "/assets/images/section-themes/04-bordeaux-rose/offer-jackets.jpg",
+        "trendingDarkRomance": "/assets/images/section-themes/04-bordeaux-rose/trending-dark-romance.jpg",
+        "trendingFauxFur": "/assets/images/section-themes/04-bordeaux-rose/trending-faux-fur.jpg",
+        "trendingFormalCoords": "/assets/images/section-themes/04-bordeaux-rose/trending-formal-coords.jpg",
+        "trendingAnimalPrint": "/assets/images/section-themes/04-bordeaux-rose/trending-animal-print.jpg"
+      }
+    },
+    {
+      "id": "emerald-olive",
+      "name": "Emerald & Burnished Olive",
+      "folder": "05-emerald-olive",
+      "colors": {
+        "primary": "#14362a",
+        "accent": "#998345",
+        "surface": "#f8faf7"
+      },
+      "images": {
+        "heroBanner": "/assets/images/section-themes/05-emerald-olive/hero-banner.jpg",
+        "bestsellersBanner": "/assets/images/section-themes/05-emerald-olive/bestsellers-banner.jpg",
+        "newArrivalsBanner": "/assets/images/section-themes/05-emerald-olive/arrivals-banner.jpg",
+        "lastChancesBanner": "/assets/images/section-themes/05-emerald-olive/clearance-banner.jpg",
+        "offerAccessories": "/assets/images/section-themes/05-emerald-olive/offer-accessories.jpg",
+        "offerKnitwear": "/assets/images/section-themes/05-emerald-olive/offer-knitwear.jpg",
+        "offerEssentials": "/assets/images/section-themes/05-emerald-olive/offer-essentials.jpg",
+        "offerJackets": "/assets/images/section-themes/05-emerald-olive/offer-jackets.jpg",
+        "trendingDarkRomance": "/assets/images/section-themes/05-emerald-olive/trending-dark-romance.jpg",
+        "trendingFauxFur": "/assets/images/section-themes/05-emerald-olive/trending-faux-fur.jpg",
+        "trendingFormalCoords": "/assets/images/section-themes/05-emerald-olive/trending-formal-coords.jpg",
+        "trendingAnimalPrint": "/assets/images/section-themes/05-emerald-olive/trending-animal-print.jpg"
+      }
+    }
+  ]
+}

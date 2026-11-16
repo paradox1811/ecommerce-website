@@ -4,6 +4,7 @@
   :root {
     --font-heading: 'Outfit', sans-serif;
     --font-sans: 'Plus Jakarta Sans', sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
   }
 
   body {
@@ -15,11 +16,36 @@
     font-family: var(--font-heading);
     letter-spacing: -0.025em;
   }
+
+  .font-serif {
+    font-family: var(--font-serif);
+  }
 }
 
 /* Custom smooth transitions and scrollbar */
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Safe area insets for notches, island, and home bars */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.h-safe-screen {
+  height: 100dvh;
 }
 
 ::-webkit-scrollbar {
@@ -39,3 +65,4 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a49c;
 }
+

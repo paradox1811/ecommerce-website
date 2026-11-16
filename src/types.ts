@@ -7,16 +7,31 @@ export interface ProductColor {
 export interface Product {
   id: string;
   name: string;
-  category: 'dresses' | 'tops' | 'bottoms' | 'outerwear' | 'co-ords' | 'accessories';
+  category:
+    | 'dresses'
+    | 'tops'
+    | 'bottoms'
+    | 'outerwear'
+    | 'co-ords'
+    | 'denim'
+    | 'lingerie'
+    | 'activewear'
+    | 'footwear'
+    | 'bags'
+    | 'jewellery'
+    | 'accessories'
+    | 'beauty';
   gender?: 'unisex' | 'women' | 'men';
   price: number;
   originalPrice?: number;
+  offerPrice?: number;
   discountPercent?: number;
   rating: number;
   reviewCount: number;
   isNew?: boolean;
   isTrending?: boolean;
   isBestSeller?: boolean;
+  hasBakedOverlay?: boolean;
   colors: ProductColor[];
   sizes: string[];
   description: string;

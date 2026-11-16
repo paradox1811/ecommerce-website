@@ -1,30 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { 
   ChevronUp, 
-  ChevronLeft, 
-  ChevronRight, 
   Sparkles,
   RefreshCw
 } from 'lucide-react';
 
 import { Product, ProductColor, CartItem } from './types';
-import { 
-  PRODUCTS,
-  HERO_PINK_CLOSET,
-  HERO_LUXURY_CAMPAIGN,
-  HERO_FASHION_EDITORIAL,
-  BLACK_MEMBER_BANNER,
-  NEW_ARRIVALS_BANNER,
-  CLEARANCE_SALE_BANNER,
-  TILE_1_ACC,
-  TILE_2_TOPS,
-  TILE_3_UNDER690,
-  TILE_4_JACKETS,
-  TRENDING_1_SPARKLES,
-  TRENDING_2_ELEGANCE,
-  TRENDING_3_FORMAL,
-  TRENDING_4_BURGUNDY,
-} from './data/products';
+import { PRODUCTS } from './data/products';
+import {
+  SECTION_COLOR_THEMES,
+  DEFAULT_THEME_ID,
+  SectionThemeId,
+} from './data/sectionThemes';
 
 import { Header } from './components/Header';
 import { ProductCard } from './components/ProductCard';
@@ -36,43 +23,43 @@ import { CheckoutModal } from './components/CheckoutModal';
 import { SizeGuideModal } from './components/SizeGuideModal';
 import { AccountModal } from './components/AccountModal';
 import { Toast, ToastMessage } from './components/Toast';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { OfflineIndicator } from './components/PWAInstallButton';
 
 export default function App() {
   const currencySymbol = '₹';
   const currencyRate = 1.0;
 
+  // Active Editorial Colour Theme (5 Distinct Themes for All Non-Product Sections)
+  const [activeThemeId, setActiveThemeId] = useState<SectionThemeId>(() => {
+    try {
+      const saved = localStorage.getItem('nilescart_section_theme') as SectionThemeId | null;
+      if (saved && SECTION_COLOR_THEMES.some((t) => t.id === saved)) return saved;
+    } catch {
+      // Ignore storage access errors
+    }
+    return DEFAULT_THEME_ID;
+  });
+
+  const currentTheme = useMemo(
+    () => SECTION_COLOR_THEMES.find((t) => t.id === activeThemeId) || SECTION_COLOR_THEMES[0],
+    [activeThemeId]
+  );
+
+  const handleSelectTheme = (id: SectionThemeId) => {
+    setActiveThemeId(id);
+    try {
+      localStorage.setItem('nilescart_section_theme', id);
+    } catch {
+      // Ignore storage access errors
+    }
+  };
+
   // Active Category & Gender Filtering
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [activeGender, setActiveGender] = useState<'all' | 'unisex' | 'women' | 'men'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [heroSlide, setHeroSlide] = useState<number>(0);
-
-  const heroSlides = [
-    {
-      id: 'slide-1',
-      image: HERO_LUXURY_CAMPAIGN,
-      tagSubtitle: 'WARM UP YOUR WARDROBE',
-      tagDiscount: 'UP TO 50% OFF',
-      tagCta: 'SHOP NOW',
-      title: 'Tuscan Autumn/Winter 2026 Unisex Campaign',
-    },
-    {
-      id: 'slide-2',
-      image: HERO_FASHION_EDITORIAL,
-      tagSubtitle: 'UNISEX ARCHITECTURE',
-      tagDiscount: 'NEW DROPS FROM ₹ 890',
-      tagCta: 'EXPLORE CAPSULE',
-      title: 'Tailored Minimalist Suiting for Men & Women',
-    },
-    {
-      id: 'slide-3',
-      image: HERO_PINK_CLOSET,
-      tagSubtitle: 'SIGNATURE ARCHIVE',
-      tagDiscount: 'UP TO 60% OFF',
-      tagCta: 'SHOP ARCHIVE',
-      title: 'Iconic Nilescart Closet Showcase',
-    },
-  ];
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Cart & Wishlist States
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -84,7 +71,7 @@ export default function App() {
       quantity: 1,
     }
   ]);
-  const [wishlist, setWishlist] = useState<Product[]>([PRODUCTS[0], PRODUCTS[1], PRODUCTS[4]]);
+  const [wishlist, setWishlist] = useState<Product[]>([PRODUCTS[0], PRODUCTS[1], PRODUCTS[7]]);
 
   // Promo Code State
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; discountPercent: number; discountFixed: number } | null>(null);
@@ -101,7 +88,7 @@ export default function App() {
   // Toasts
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [recentOrders, setRecentOrders] = useState<Array<{ id: string; date: string; status: string; total: number }>>([
-    { id: 'NC-984210', date: 'Yesterday', status: 'Dispatched via Express Courier', total: 4990 }
+    { id: 'NC-984210', date: 'Yesterday', status: 'Dispatched via Express Courier', total: 1611 }
   ]);
 
   const showToast = (type: 'cart' | 'wishlist' | 'info', title: string, subtitle?: string) => {
@@ -202,39 +189,51 @@ export default function App() {
     }
   };
 
-  // 4 Price Point Tiles Data matching Screenshot 1 & 2
-  const priceTiles = [
+  // 4 SPECIAL OFFER Tiles Data (Dynamic per Selected Editorial Colour Theme)
+  const specialOffers = [
     {
-      id: 'tile-1',
-      image: TILE_1_ACC,
+      id: 'offer-1',
+      image: currentTheme.images.offerAccessories,
       caption: 'Accessories & Jewellery',
+      kicker: 'STARTING AT',
+      price: '₹90',
+      theme: 'light-top' as const,
       onClick: () => {
         setActiveCategory('accessories');
         scrollToForYou();
       }
     },
     {
-      id: 'tile-2',
-      image: TILE_2_TOPS,
+      id: 'offer-2',
+      image: currentTheme.images.offerKnitwear,
       caption: 'Autumn Tops & Knits',
+      kicker: 'FROM',
+      price: '₹590',
+      theme: 'photo-center' as const,
       onClick: () => {
         setActiveCategory('tops');
         scrollToForYou();
       }
     },
     {
-      id: 'tile-3',
-      image: TILE_3_UNDER690,
+      id: 'offer-3',
+      image: currentTheme.images.offerEssentials,
       caption: 'Pick Anything',
+      kicker: 'UNDER',
+      price: '₹690',
+      theme: 'light-top' as const,
       onClick: () => {
         setActiveCategory('all');
         scrollToForYou();
       }
     },
     {
-      id: 'tile-4',
-      image: TILE_4_JACKETS,
+      id: 'offer-4',
+      image: currentTheme.images.offerJackets,
       caption: 'Jackets & Outerwear',
+      kicker: 'FROM',
+      price: '₹890',
+      theme: 'photo-center' as const,
       onClick: () => {
         setActiveCategory('outerwear');
         scrollToForYou();
@@ -242,35 +241,35 @@ export default function App() {
     },
   ];
 
-  // 4 Trending Now Cards Data matching Screenshot 3
+  // 4 TRENDING NOW Cards Data (Dynamic per Selected Editorial Colour Theme)
   const trendingCards = [
     {
       id: 'trend-1',
-      title: 'Holiday Sparkles',
-      image: TRENDING_1_SPARKLES,
-      prod: PRODUCTS[0],
+      title: 'Dark Romance',
+      image: currentTheme.images.trendingDarkRomance,
+      prod: PRODUCTS[7],
     },
     {
       id: 'trend-2',
-      title: 'Elegance Defined',
-      image: TRENDING_2_ELEGANCE,
-      prod: PRODUCTS[1],
+      title: 'Faux Fur',
+      image: currentTheme.images.trendingFauxFur,
+      prod: PRODUCTS[21],
     },
     {
       id: 'trend-3',
       title: 'Formal Co-ords',
-      image: TRENDING_3_FORMAL,
-      prod: PRODUCTS[3],
+      image: currentTheme.images.trendingFormalCoords,
+      prod: PRODUCTS[4],
     },
     {
       id: 'trend-4',
-      title: 'Back to Burgundy',
-      image: TRENDING_4_BURGUNDY,
-      prod: PRODUCTS[4],
+      title: 'Animal Print Everything',
+      image: currentTheme.images.trendingAnimalPrint,
+      prod: PRODUCTS[8],
     },
   ];
 
-  // Filtered Products for the "FOR YOU" section (Unisex, Men, Women, All)
+  // Filtered Products for the "FOR YOU" section
   const filteredProducts = useMemo(() => {
     let result = [...PRODUCTS];
 
@@ -283,7 +282,7 @@ export default function App() {
     }
 
     if (activeCategory !== 'all') {
-      result = result.filter((p) => p.category === activeCategory);
+      result = result.filter((p) => p.category === activeCategory || p.tags.includes(activeCategory));
     }
 
     if (searchQuery.trim()) {
@@ -301,8 +300,11 @@ export default function App() {
   }, [activeGender, activeCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col text-neutral-900 selection:bg-black selection:text-white font-sans antialiased">
-      {/* 1. Header (Black Top Ticker + Main Nav + Categories) - Exact Savana UI */}
+    <div
+      className="min-h-screen flex flex-col text-neutral-900 font-sans antialiased transition-colors duration-300"
+      style={{ backgroundColor: currentTheme.palette.pageBg }}
+    >
+      {/* 1. Header (Dynamic Top Ticker + Main Nav + Categories) */}
       <Header
         cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
         wishlistCount={wishlist.length}
@@ -315,121 +317,216 @@ export default function App() {
         onOpenCart={() => setCartOpen(true)}
         onOpenWishlist={() => setWishlistOpen(true)}
         onOpenAccount={() => setAccountOpen(true)}
+        mobileMenuOpen={mobileMenuOpen}
+        onSetMobileMenuOpen={setMobileMenuOpen}
+        tickerBg={currentTheme.palette.tickerBg}
+        tickerText={currentTheme.palette.tickerText}
+        accentColor={currentTheme.palette.accent}
       />
 
-      <main className="flex-1">
-        {/* 2. Hero Campaign Showcase (Dynamic Luxury Images + Savana Layout) */}
-        <section className="relative w-full overflow-hidden bg-white">
-          <div className="relative w-full max-w-[1440px] mx-auto">
-            {/* The Main Hero Compartment Image with Multi-Slide Transition */}
-            <div className="relative w-full aspect-[16/9] md:aspect-[21/9] lg:aspect-[2.35/1] overflow-hidden cursor-pointer bg-neutral-900 group" onClick={scrollToForYou}>
-              <img
-                src={heroSlides[heroSlide].image}
-                alt={heroSlides[heroSlide].title}
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover object-center transition-all duration-700 ease-out select-none"
-              />
-
-              {/* Subtle Gradient Scrim for Contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
-
-              {/* Central Hanging Luxury Tag matching Savana Layout */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="bg-white/95 backdrop-blur-md px-6 sm:px-10 py-5 sm:py-7 rounded-2xl border-2 border-[#d4af37]/70 shadow-2xl flex flex-col items-center text-center max-w-[280px] sm:max-w-sm pointer-events-auto transition-transform hover:scale-102">
-                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-black tracking-[0.2em] uppercase text-neutral-800">
-                    <Sparkles className="w-3.5 h-3.5 text-[#b38b4c] fill-[#b38b4c]" />
-                    <span>{heroSlides[heroSlide].tagSubtitle}</span>
-                    <Sparkles className="w-3.5 h-3.5 text-[#b38b4c] fill-[#b38b4c]" />
-                  </div>
-                  <div className="text-2xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight mt-1 mb-3">
-                    {heroSlides[heroSlide].tagDiscount}
-                  </div>
+      <main className="flex-1 pb-16 md:pb-0">
+        {/* Editorial Colour Theme Selector Strip (5 Curated Themes — Section Imagery Only) */}
+        <section
+          aria-label="Storefront Editorial Colour Theme Selector"
+          className="w-full border-b border-black/10 transition-colors duration-300"
+          style={{ backgroundColor: currentTheme.palette.surfaceMuted }}
+        >
+          <div className="w-full px-3 sm:px-6 lg:px-8 py-2 flex items-center justify-between gap-3 overflow-x-auto scrollbar-none">
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-neutral-700 whitespace-nowrap shrink-0">
+              Editorial Palette
+            </span>
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0" role="tablist" aria-label="Choose editorial colour theme">
+              {SECTION_COLOR_THEMES.map((theme) => {
+                const isSelected = theme.id === currentTheme.id;
+                return (
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      scrollToForYou();
-                    }}
-                    className="px-6 sm:px-8 py-2 bg-gradient-to-r from-[#fef5db] via-[#faebca] to-[#f5dfb3] text-neutral-900 text-xs sm:text-sm font-extrabold rounded-full border border-[#d4af37] shadow-md hover:brightness-105 transition-all tracking-wider uppercase"
-                  >
-                    {heroSlides[heroSlide].tagCta}
-                  </button>
-                </div>
-              </div>
-
-              {/* Interactive Left & Right Navigation Arrows */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setHeroSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1));
-                }}
-                className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 bg-white/85 hover:bg-white text-neutral-900 rounded-full flex items-center justify-center transition-all shadow-md z-10"
-                aria-label="Previous campaign slide"
-              >
-                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setHeroSlide((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1));
-                }}
-                className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 bg-white/85 hover:bg-white text-neutral-900 rounded-full flex items-center justify-center transition-all shadow-md z-10"
-                aria-label="Next campaign slide"
-              >
-                <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
-              </button>
-
-              {/* Bottom Carousel Indicator Dots */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
-                {heroSlides.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setHeroSlide(idx);
-                    }}
-                    className={`h-2 rounded-full transition-all ${
-                      heroSlide === idx ? 'w-6 bg-white shadow-xs' : 'w-2 bg-white/50 hover:bg-white/80'
+                    key={theme.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    onClick={() => handleSelectTheme(theme.id)}
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-[11px] font-semibold tracking-tight whitespace-nowrap shrink-0 transition-all cursor-pointer border ${
+                      isSelected
+                        ? 'shadow-xs border-transparent'
+                        : 'bg-white/80 text-neutral-700 border-black/10 hover:bg-white hover:text-black'
                     }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Black Day Sale Member Banner Strip matching Screenshot 5 */}
-            <div className="w-full cursor-pointer" onClick={scrollToForYou}>
-              <img
-                src={BLACK_MEMBER_BANNER}
-                alt="Day Sale Member Prices Up to 50% Off + 3X Points"
-                referrerPolicy="no-referrer"
-                className="w-full h-auto block select-none"
-              />
+                    style={
+                      isSelected
+                        ? {
+                            backgroundColor: theme.palette.accent,
+                            color: theme.palette.accentText,
+                          }
+                        : undefined
+                    }
+                  >
+                    <span className="flex items-center -space-x-1 shrink-0" aria-hidden="true">
+                      <span
+                        className="w-3 h-3 rounded-full border border-white/80"
+                        style={{ backgroundColor: theme.swatchPrimary }}
+                      />
+                      <span
+                        className="w-3 h-3 rounded-full border border-white/80"
+                        style={{ backgroundColor: theme.swatchSecondary }}
+                      />
+                    </span>
+                    <span>{theme.name}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        {/* 3. Section: 4 Price Point Tiles matching Screenshot 1 & 2 */}
-        <section className="w-full bg-white py-6 md:py-10">
-          <div className="max-w-[1440px] mx-auto px-4 lg:px-12">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5 lg:gap-6">
-              {priceTiles.map((tile) => (
+        {/* 2. Hero Editorial Banner (Full-Screen Edge-to-Edge, Uncropped 1376x768 Frame) + Flash Sale Bar */}
+        <section className="w-full">
+          <div className="w-full">
+            <div
+              className="relative w-full aspect-[1376/768] overflow-hidden cursor-pointer group"
+              style={{ backgroundColor: currentTheme.palette.surfaceMuted }}
+              onClick={scrollToForYou}
+            >
+              <img
+                src={currentTheme.images.heroBanner}
+                alt={`Winter is here Up to 50% OFF - ${currentTheme.name}`}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.006]"
+              />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: currentTheme.palette.bannerScrimGradient }}
+              />
+
+              {/* Right-Half Editorial Headline Lockup */}
+              <div className="absolute inset-y-0 right-0 w-[55%] flex flex-col items-center justify-center text-center px-3 sm:px-8 pointer-events-none">
+                <p
+                  className="font-serif text-base sm:text-3xl md:text-5xl lg:text-6xl tracking-tight leading-none"
+                  style={{ color: currentTheme.palette.bannerHeadlineColor }}
+                >
+                  <span>Winter </span>
+                  <span className="italic" style={{ color: currentTheme.palette.bannerAccentColor }}>
+                    is here
+                  </span>
+                </p>
+                <div className="mt-1.5 sm:mt-4 flex items-baseline justify-center gap-1.5 sm:gap-3">
+                  <span
+                    className="font-serif italic text-xs sm:text-xl md:text-2xl lg:text-3xl"
+                    style={{ color: currentTheme.palette.bannerEyebrowColor }}
+                  >
+                    Up to
+                  </span>
+                  <span
+                    className="font-serif font-black text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl tracking-tighter leading-none tabular-nums"
+                    style={{ color: currentTheme.palette.bannerAccentColor }}
+                  >
+                    50%
+                  </span>
+                  <span
+                    className="font-serif italic font-bold text-sm sm:text-2xl md:text-3xl lg:text-4xl"
+                    style={{ color: currentTheme.palette.bannerAccentColor }}
+                  >
+                    OFF
+                  </span>
+                </div>
+                <span
+                  className="mt-2 sm:mt-6 inline-flex items-center justify-center px-4 sm:px-9 py-1 sm:py-2.5 rounded-full text-[9px] sm:text-xs font-extrabold uppercase tracking-[0.14em] shadow-md transition-opacity group-hover:opacity-90"
+                  style={{
+                    backgroundColor: currentTheme.palette.bannerCtaBg,
+                    color: currentTheme.palette.bannerCtaText,
+                  }}
+                >
+                  SHOP NOW
+                </span>
+              </div>
+            </div>
+
+            {/* Crisp Full-Width Attached Flash Sale Strip */}
+            <button
+              type="button"
+              onClick={scrollToForYou}
+              className="w-full text-white px-4 sm:px-8 lg:px-10 py-2.5 sm:py-3.5 flex items-center justify-between text-left transition-opacity hover:opacity-95 cursor-pointer"
+              style={{ backgroundColor: currentTheme.palette.flashBarBg }}
+            >
+              <div className="flex items-baseline gap-2.5 sm:gap-4 flex-wrap">
+                <span className="text-base sm:text-xl md:text-2xl font-black uppercase tracking-tight">
+                  FLASH SALE
+                </span>
+                <span className="text-sm sm:text-lg md:text-2xl font-light uppercase tracking-wide text-neutral-100">
+                  UP TO 70% OFF
+                </span>
+              </div>
+              <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">
+                SHOP NOW &gt;
+              </span>
+            </button>
+          </div>
+        </section>
+
+        {/* 3. Section: SPECIAL OFFER (Full-Width 4 Cards) */}
+        <section className="w-full py-6 md:py-10">
+          <div className="w-full px-3 sm:px-6 lg:px-8">
+            <h2 className="text-xl sm:text-2xl md:text-[26px] font-black uppercase tracking-tight text-black text-center mb-5 md:mb-6">
+              SPECIAL OFFER
+            </h2>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+              {specialOffers.map((tile) => (
                 <div
                   key={tile.id}
                   onClick={tile.onClick}
                   className="group flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-full aspect-[3/4] overflow-hidden rounded-xs bg-[#f4a6b8] shadow-xs transition-transform duration-300 group-hover:scale-[1.015]">
+                  <div
+                    className="relative w-full aspect-[896/1200] overflow-hidden transition-transform duration-300 group-hover:scale-[1.015]"
+                    style={{ backgroundColor: currentTheme.palette.surfaceMuted }}
+                  >
                     <img
                       src={tile.image}
                       alt={tile.caption}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center"
                       loading="lazy"
                     />
+
+                    {/* Contrast Gradient / Scrim + Crisp Price Point Typography */}
+                    {tile.theme === 'photo-center' ? (
+                      <div className="absolute inset-0 bg-black/25 flex flex-col items-center justify-center text-center px-2 select-none">
+                        <span className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.16em] text-white drop-shadow">
+                          {tile.kicker}
+                        </span>
+                        <span className="mt-1 font-sans font-black text-3xl sm:text-4xl lg:text-[44px] text-white tracking-tight leading-none drop-shadow-md tabular-nums">
+                          {tile.price}
+                        </span>
+                        <span className="mt-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-white border-b border-white pb-0.5 drop-shadow">
+                          SHOP NOW &gt;
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="absolute inset-x-0 top-0 h-[72%] flex flex-col items-center justify-center text-center px-2 select-none">
+                        <span
+                          className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.16em]"
+                          style={{ color: currentTheme.palette.offerLightSubText }}
+                        >
+                          {tile.kicker}
+                        </span>
+                        <span
+                          className="mt-1 font-sans font-black text-3xl sm:text-4xl lg:text-[44px] tracking-tight leading-none tabular-nums"
+                          style={{ color: currentTheme.palette.offerLightText }}
+                        >
+                          {tile.price}
+                        </span>
+                        <span
+                          className="mt-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest border-b pb-0.5"
+                          style={{
+                            color: currentTheme.palette.offerLightCtaText,
+                            borderColor: currentTheme.palette.offerLightCtaText,
+                          }}
+                        >
+                          SHOP NOW &gt;
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <h3 className="mt-3 text-sm md:text-base font-bold text-neutral-900 group-hover:text-black transition-colors text-center">
+                  <h3 className="mt-2.5 text-[13px] md:text-[14px] font-bold text-neutral-900 group-hover:text-black transition-colors text-center">
                     {tile.caption}
                   </h3>
                 </div>
@@ -438,32 +535,80 @@ export default function App() {
           </div>
         </section>
 
-        {/* 4. Section: TRENDING NOW matching Screenshot 3 */}
-        <section className="w-full bg-white py-8 md:py-12 border-t border-neutral-100">
-          <div className="max-w-[1440px] mx-auto px-4 lg:px-12">
-            <div className="text-center mb-6 md:mb-8">
-              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-black">
-                TRENDING NOW
-              </h2>
-            </div>
+        {/* 4. Section: Hot right now. Best Sellers. Full-Screen Uncropped Banner */}
+        <section className="w-full py-2 md:py-3">
+          <div className="w-full">
+            <div
+              className="relative w-full aspect-[1376/768] overflow-hidden cursor-pointer group"
+              style={{ backgroundColor: currentTheme.palette.surfaceMuted }}
+              onClick={scrollToForYou}
+            >
+              <img
+                src={currentTheme.images.bestsellersBanner}
+                alt={`Hot right now. Best Sellers. FROM ₹390 - ${currentTheme.name}`}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.006]"
+                loading="lazy"
+              />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: currentTheme.palette.bannerScrimGradient }}
+              />
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5 lg:gap-6">
+              <div className="absolute inset-y-0 right-0 w-[52%] flex flex-col items-center justify-center text-center px-3 sm:px-8 pointer-events-none">
+                <p
+                  className="font-serif text-xs sm:text-xl md:text-2xl lg:text-3xl tracking-tight"
+                  style={{ color: currentTheme.palette.bannerHeadlineColor }}
+                >
+                  Hot right now. Best Sellers.
+                </p>
+                <p
+                  className="mt-1 sm:mt-2 font-serif font-black text-2xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-none tabular-nums"
+                  style={{ color: currentTheme.palette.bannerAccentColor }}
+                >
+                  FROM ₹390
+                </p>
+                <span
+                  className="mt-2.5 sm:mt-5 inline-flex items-center justify-center px-4 sm:px-8 py-1 sm:py-2.5 rounded-full text-[9px] sm:text-xs font-extrabold uppercase tracking-[0.14em] shadow-sm transition-opacity group-hover:opacity-90"
+                  style={{
+                    backgroundColor: currentTheme.palette.bannerCtaBg,
+                    color: currentTheme.palette.bannerCtaText,
+                  }}
+                >
+                  SHOP NOW
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. Section: TRENDING NOW (Full-Width 4 Cards) */}
+        <section className="w-full py-6 md:py-10">
+          <div className="w-full px-3 sm:px-6 lg:px-8">
+            <h2 className="text-xl sm:text-2xl md:text-[26px] font-black uppercase tracking-tight text-black text-center mb-5 md:mb-6">
+              TRENDING NOW
+            </h2>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               {trendingCards.map((card) => (
                 <div
                   key={card.id}
                   onClick={() => setSelectedProduct(card.prod)}
                   className="group flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-full aspect-[3/4] overflow-hidden rounded-xs bg-neutral-100 shadow-xs transition-transform duration-300 group-hover:scale-[1.015]">
+                  <div
+                    className="w-full aspect-[896/1200] overflow-hidden transition-transform duration-300 group-hover:scale-[1.015]"
+                    style={{ backgroundColor: currentTheme.palette.surfaceMuted }}
+                  >
                     <img
                       src={card.image}
                       alt={card.title}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center"
                       loading="lazy"
                     />
                   </div>
-                  <h3 className="mt-3 text-sm md:text-base font-bold text-neutral-900 group-hover:text-black transition-colors text-center">
+                  <h3 className="mt-2.5 text-[13px] md:text-[14px] font-bold text-neutral-900 group-hover:text-black transition-colors text-center">
                     {card.title}
                   </h3>
                 </div>
@@ -472,75 +617,196 @@ export default function App() {
           </div>
         </section>
 
-        {/* 5. Section: NEW ARRIVALS Cinematic Campaign Banner matching Screenshot 4 */}
-        <section className="w-full bg-white py-4 md:py-8">
-          <div className="max-w-[1440px] mx-auto px-4 lg:px-12">
+        {/* 6. Section: NEW ARRIVALS FROM ₹390 Full-Screen Uncropped Banner */}
+        <section className="w-full py-2 md:py-3">
+          <div className="w-full">
             <div
-              className="relative w-full overflow-hidden rounded-xs cursor-pointer shadow-xs group"
+              className="relative w-full aspect-[1376/768] overflow-hidden cursor-pointer group"
+              style={{ backgroundColor: currentTheme.palette.surfaceMuted }}
               onClick={scrollToForYou}
             >
               <img
-                src={NEW_ARRIVALS_BANNER}
-                alt="New Arrivals From ₹390"
+                src={currentTheme.images.newArrivalsBanner}
+                alt={`NEW ARRIVALS FROM ₹390 - ${currentTheme.name}`}
                 referrerPolicy="no-referrer"
-                className="w-full h-auto block select-none transition-transform duration-500 group-hover:scale-[1.008]"
+                className="w-full h-full object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.006]"
                 loading="lazy"
               />
-              <div 
-                className="absolute right-[10%] md:right-[15%] bottom-[12%] md:bottom-[15%] w-32 md:w-48 h-8 md:h-12 rounded-full cursor-pointer hover:bg-white/20 transition-colors"
-                title="Shop New Arrivals"
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: currentTheme.palette.bannerScrimGradient }}
               />
+
+              <div className="absolute inset-y-0 right-0 w-[50%] flex flex-col items-start justify-center px-4 sm:px-10 lg:px-16 pointer-events-none">
+                <span
+                  className="text-[10px] sm:text-sm md:text-base font-bold uppercase tracking-[0.22em]"
+                  style={{ color: currentTheme.palette.bannerEyebrowColor }}
+                >
+                  NEW ARRIVALS
+                </span>
+                <span
+                  className="mt-0.5 sm:mt-1 font-serif text-lg sm:text-3xl md:text-4xl lg:text-5xl leading-none"
+                  style={{ color: currentTheme.palette.bannerHeadlineColor }}
+                >
+                  FROM
+                </span>
+                <span
+                  className="mt-0.5 font-serif font-black text-3xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-none tabular-nums"
+                  style={{ color: currentTheme.palette.bannerAccentColor }}
+                >
+                  ₹390
+                </span>
+                <span
+                  className="mt-2.5 sm:mt-5 inline-flex items-center justify-center px-4 sm:px-8 py-1 sm:py-2.5 rounded-full text-[9px] sm:text-xs font-extrabold uppercase tracking-[0.14em] shadow-sm transition-opacity group-hover:opacity-90"
+                  style={{
+                    backgroundColor: currentTheme.palette.bannerCtaBg,
+                    color: currentTheme.palette.bannerCtaText,
+                  }}
+                >
+                  SHOP NOW
+                </span>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* 6. Section: Clearance Sale Pink Banner matching Screenshot 2 */}
-        <section className="w-full bg-white py-4 md:py-6">
-          <div className="max-w-[1440px] mx-auto px-4 lg:px-12">
+        {/* 7. Section: LAST CHANCES 20-60% OFF Full-Screen Sale Banner */}
+        <section className="w-full py-3 md:py-4">
+          <div className="w-full">
             <div
-              className="relative w-full overflow-hidden rounded-xs cursor-pointer shadow-xs group"
+              className="relative w-full aspect-[2.6/1] sm:aspect-[4.4/1] overflow-hidden cursor-pointer group"
+              style={{ backgroundColor: currentTheme.palette.surfaceMuted }}
               onClick={scrollToForYou}
             >
               <img
-                src={CLEARANCE_SALE_BANNER}
-                alt="Clearance Sale Up to 60% Off"
+                src={currentTheme.images.lastChancesBanner}
+                alt={`YOUR FAVORITES, FOR A LIMITED TIME! LAST CHANCES 20-60% OFF - ${currentTheme.name}`}
                 referrerPolicy="no-referrer"
-                className="w-full h-auto block select-none transition-transform duration-500 group-hover:scale-[1.008]"
+                className="w-full h-full object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.006]"
                 loading="lazy"
               />
-              <div 
-                className="absolute left-1/2 -translate-x-1/2 bottom-[14%] md:bottom-[16%] w-32 md:w-44 h-7 md:h-10 rounded-full cursor-pointer hover:bg-white/20 transition-colors"
-                title="Shop Clearance Sale"
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ backgroundColor: currentTheme.palette.lastChancesScrim }}
               />
+
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
+                <span
+                  className="text-[9px] sm:text-xs font-extrabold uppercase tracking-[0.18em]"
+                  style={{ color: currentTheme.palette.lastChancesInk }}
+                >
+                  YOUR FAVORITES, FOR A LIMITED TIME!
+                </span>
+                <div className="mt-1 sm:mt-2 flex items-center justify-center gap-2 sm:gap-4">
+                  <div
+                    className="hidden sm:flex flex-col items-end text-[11px] md:text-sm font-serif font-bold leading-tight uppercase"
+                    style={{ color: currentTheme.palette.lastChancesInk }}
+                  >
+                    <span>LAST</span>
+                    <span>CHANCES</span>
+                  </div>
+                  <span
+                    className="font-serif font-black text-3xl sm:text-5xl md:text-6xl tracking-tight leading-none tabular-nums"
+                    style={{ color: currentTheme.palette.lastChancesInk }}
+                  >
+                    20–60% OFF
+                  </span>
+                </div>
+                <span
+                  className="mt-2 sm:mt-3.5 inline-flex items-center justify-center px-5 sm:px-7 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-extrabold uppercase tracking-[0.14em] shadow-sm transition-opacity group-hover:opacity-90"
+                  style={{
+                    backgroundColor: currentTheme.palette.lastChancesCtaBg,
+                    color: currentTheme.palette.lastChancesCtaText,
+                  }}
+                >
+                  SHOP NOW
+                </span>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* 7. Section: FOR YOU Curated Product Grid (Unisex, Men, Women) matching Screenshot 2 & 5 */}
-        <section id="for-you-section" className="w-full bg-white py-6 md:py-10">
-          <div className="max-w-[1440px] mx-auto px-4 lg:px-12">
-            {/* Title & Gender Switcher Controls */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 sm:mb-6">
-              <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-black">
+        {/* 8. Section: FOR YOU Product Grid (Full-Width 4 Columns — Unchanged Product Photography) */}
+        <section id="for-you-section" className="w-full pt-4 pb-8 md:pt-6 md:pb-12">
+          <div className="w-full px-3 sm:px-6 lg:px-8">
+            {/* Title & Gender Filter Controls */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-5">
+              <h2 className="text-lg sm:text-xl font-black uppercase tracking-tight text-black">
                 FOR YOU
               </h2>
 
-              {/* Gender Filter Tabs (All, Unisex, Women, Men) */}
-              <div className="flex items-center gap-1.5 bg-neutral-100 p-1 rounded-full text-xs font-bold tracking-wider uppercase">
+              <div
+                className="flex items-center gap-1 p-1 rounded-full text-[11px] font-bold tracking-wider uppercase self-start sm:self-auto"
+                style={{ backgroundColor: currentTheme.palette.surfaceMuted }}
+              >
                 {(['all', 'unisex', 'women', 'men'] as const).map((g) => (
                   <button
                     key={g}
                     onClick={() => setActiveGender(g)}
-                    className={`px-3.5 py-1 rounded-full transition-all ${
+                    className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
                       activeGender === g
-                        ? 'bg-black text-white shadow-xs'
-                        : 'text-neutral-600 hover:text-black'
+                        ? 'shadow-xs'
+                        : 'text-neutral-700 hover:text-black'
                     }`}
+                    style={
+                      activeGender === g
+                        ? {
+                            backgroundColor: currentTheme.palette.accent,
+                            color: currentTheme.palette.accentText,
+                          }
+                        : undefined
+                    }
                   >
                     {g === 'all' ? 'All Pieces' : g}
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Category Filter Strip (All 13 Ecommerce Categories) */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-3 mb-3 border-b border-neutral-100">
+              {(
+                [
+                  { label: 'All Categories', value: 'all' },
+                  { label: 'Tops & Knitwear', value: 'tops' },
+                  { label: 'Dresses', value: 'dresses' },
+                  { label: 'Bottoms & Skirts', value: 'bottoms' },
+                  { label: 'Co-Ords & Jumpsuits', value: 'co-ords' },
+                  { label: 'Denim', value: 'denim' },
+                  { label: 'Outerwear & Coats', value: 'outerwear' },
+                  { label: 'Footwear', value: 'footwear' },
+                  { label: 'Lingerie & Lounge', value: 'lingerie' },
+                  { label: 'Activewear', value: 'activewear' },
+                  { label: 'Bags', value: 'bags' },
+                  { label: 'Jewellery & Watches', value: 'jewellery' },
+                  { label: 'Accessories', value: 'accessories' },
+                  { label: 'Beauty & Fragrance', value: 'beauty' },
+                ] as const
+              ).map((cat) => {
+                const isActive = activeCategory === cat.value;
+                return (
+                  <button
+                    key={cat.value}
+                    type="button"
+                    onClick={() => setActiveCategory(cat.value)}
+                    className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider whitespace-nowrap shrink-0 transition-all cursor-pointer border ${
+                      isActive
+                        ? 'border-transparent shadow-xs'
+                        : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400 hover:text-black'
+                    }`}
+                    style={
+                      isActive
+                        ? {
+                            backgroundColor: currentTheme.palette.accent,
+                            color: currentTheme.palette.accentText,
+                          }
+                        : undefined
+                    }
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Active Filter Pill */}
@@ -570,28 +836,61 @@ export default function App() {
               </div>
             )}
 
-            {/* Product Cards Grid (Matching Screenshot 5) */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5">
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  currencySymbol={currencySymbol}
-                  currencyRate={currencyRate}
-                  isWishlisted={wishlist.some((w) => w.id === product.id)}
-                  onToggleWishlist={handleToggleWishlist}
-                  onQuickView={setSelectedProduct}
-                  onQuickAdd={(prod, color, size) => handleAddToCart(prod, color, size, 1)}
-                />
-              ))}
-            </div>
+            {/* 4-Column Product Grid Matching PDF Anatomy */}
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    currencySymbol={currencySymbol}
+                    currencyRate={currencyRate}
+                    isWishlisted={wishlist.some((w) => w.id === product.id)}
+                    onToggleWishlist={handleToggleWishlist}
+                    onQuickView={setSelectedProduct}
+                    onQuickAdd={(prod, color, size) => handleAddToCart(prod, color, size, 1)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="py-16 px-4 text-center bg-[#f8f6f2] rounded-xl border border-neutral-200/70">
+                <p className="text-base font-bold text-neutral-900">No pieces match this filter</p>
+                <p className="text-xs text-neutral-500 mt-1">Explore our full seasonal curation across unisex, women, and men edits.</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveGender('all');
+                    setActiveCategory('all');
+                    setSearchQuery('');
+                  }}
+                  className="mt-4 px-5 py-2 rounded-full bg-[#14362a] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#1d4a3a] transition-colors"
+                >
+                  View All Pieces
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Centered Editorial Wordmark matching Signature Footer */}
+        <section className="w-full py-8 md:py-12">
+          <div className="w-full px-4 text-center">
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className="text-[40px] md:text-[52px] font-black lowercase tracking-[-0.04em] hover:opacity-85 transition-opacity select-none cursor-pointer"
+              style={{ color: currentTheme.palette.editorialWordmark }}
+              aria-label="Back to top"
+            >
+              nilescart
+            </button>
           </div>
         </section>
       </main>
 
-      {/* 8. Footer (Exact Savana Footer with NILESCART Branding) */}
+      {/* 9. Footer */}
       <footer className="bg-white border-t border-neutral-200 py-10 text-xs text-neutral-600">
-        <div className="max-w-[1440px] mx-auto px-4 lg:px-12">
+        <div className="w-full px-4 sm:px-6 lg:px-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pb-8 border-b border-neutral-100">
             <div>
               <h4 className="text-black font-bold uppercase tracking-wider mb-3">Customer Care</h4>
@@ -607,9 +906,10 @@ export default function App() {
               <h4 className="text-black font-bold uppercase tracking-wider mb-3">Shop Categories</h4>
               <ul className="space-y-2 text-neutral-500">
                 <li><button onClick={() => { setActiveCategory('tops'); scrollToForYou(); }} className="hover:text-black">Tops & Knits</button></li>
-                <li><button onClick={() => { setActiveCategory('dresses'); scrollToForYou(); }} className="hover:text-black">Dresses</button></li>
-                <li><button onClick={() => { setActiveCategory('co-ords'); scrollToForYou(); }} className="hover:text-black">Co-Ords & Sets</button></li>
-                <li><button onClick={() => { setActiveCategory('outerwear'); scrollToForYou(); }} className="hover:text-black">Jackets & Outerwear</button></li>
+                <li><button onClick={() => { setActiveCategory('dresses'); scrollToForYou(); }} className="hover:text-black">Dresses & Co-Ords</button></li>
+                <li><button onClick={() => { setActiveCategory('outerwear'); scrollToForYou(); }} className="hover:text-black">Outerwear & Denim</button></li>
+                <li><button onClick={() => { setActiveCategory('footwear'); scrollToForYou(); }} className="hover:text-black">Footwear & Bags</button></li>
+                <li><button onClick={() => { setActiveCategory('jewellery'); scrollToForYou(); }} className="hover:text-black">Jewellery & Beauty</button></li>
               </ul>
             </div>
 
@@ -649,22 +949,21 @@ export default function App() {
         </div>
       </footer>
 
-      {/* 9. Floating Buttons Matching Screenshot */}
-      {/* Scroll to Top Up Arrow */}
-      <div className="fixed bottom-6 right-6 z-30 flex flex-col items-center gap-2.5">
+      {/* 9. Floating Buttons (Back to Top & Stylist - Positioned above mobile bottom bar) */}
+      <div className="fixed bottom-20 md:bottom-6 right-3.5 sm:right-6 z-30 flex flex-col items-center gap-2.5">
         <button
           onClick={scrollToTop}
-          className="w-10 h-10 rounded-full bg-white shadow-lg border border-neutral-200 flex items-center justify-center text-neutral-800 hover:bg-neutral-50 transition-transform hover:-translate-y-0.5"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-neutral-200 flex items-center justify-center text-neutral-800 hover:bg-neutral-50 transition-transform hover:-translate-y-0.5 active:scale-95"
           aria-label="Scroll to top"
           title="Back to top"
         >
-          <ChevronUp className="w-5 h-5 stroke-[2.2]" />
+          <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
         </button>
 
         {/* Floating AI / Styling Assistant Pill Matching Screenshot Bottom-Right */}
         <button
           onClick={() => showToast('info', 'NILESCART Style Advisor', 'Ask our AI stylist for size & outfit recommendations!')}
-          className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 via-pink-500 to-indigo-500 text-white flex items-center justify-center shadow-md hover:scale-105 transition-transform"
+          className="w-9 h-9 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-purple-500 via-pink-500 to-indigo-500 text-white flex items-center justify-center shadow-md hover:scale-105 transition-transform active:scale-95"
           aria-label="Style Assistant"
           title="NILESCART Styling Assistant"
         >
@@ -674,6 +973,7 @@ export default function App() {
 
       {/* 10. Modals & Drawers */}
       <ProductDetailModal
+        key={selectedProduct?.id ?? 'closed'}
         product={selectedProduct}
         currencySymbol={currencySymbol}
         currencyRate={currencyRate}
@@ -759,6 +1059,20 @@ export default function App() {
       />
 
       <Toast toasts={toasts} onDismiss={handleDismissToast} />
+
+      {/* Mobile Bottom Navigation Bar for Phones & Handhelds */}
+      <MobileBottomNav
+        cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+        wishlistCount={wishlist.length}
+        onOpenSearch={() => setSearchOpen(true)}
+        onOpenCategories={() => setMobileMenuOpen(true)}
+        onOpenWishlist={() => setWishlistOpen(true)}
+        onOpenCart={() => setCartOpen(true)}
+        onGoHome={scrollToTop}
+      />
+
+      {/* Network Connectivity Indicator */}
+      <OfflineIndicator />
     </div>
   );
 }
